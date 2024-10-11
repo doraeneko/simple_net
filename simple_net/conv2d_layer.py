@@ -5,14 +5,14 @@
 # (C) Andreas Gaiser (doraeneko@github)
 # Conv2D layer implementation
 #################################################################
-import abc
-import typing
 
+import typing
 from .matrix import Matrix
 from .tensor3d import Tensor3D
 from .layer import Layer
 from .filter import SamePaddingFilter
-import math
+
+MULTIPROCESSING = False
 
 
 class Conv2DFilter(SamePaddingFilter):
@@ -103,19 +103,20 @@ class Conv2DLayer(Layer):
             c_dim, x_dim, y_dim = input.shape()
             in_min = input.min_value()
             in_max = input.max_value()
-            upper_bound = 0.0
             channel_bounds = []
             # compute approximation here
             for channel in range(c_dim):
                 f_min = filter.weights(channel).min_entry()[1]
                 f_max = filter.weights(channel).max_entry()[1]
-                print(f_min, f_max, in_min, in_max)
-                channel_bound = x_dim*y_dim*max(f_min*in_min, f_min*in_max, f_max*in_min, f_max*in_max)
-                upper_bound += channel_bound
+                channel_bound = (
+                    x_dim
+                    * y_dim
+                    * max(
+                        f_min * in_min, f_min * in_max, f_max * in_min, f_max * in_max
+                    )
+                )
                 channel_bounds.append(channel_bound)
 
-            if upper_bound + filter.get_bias() < 0.0:
-                print("SAVED!")
             filter_result = None
             for channel in range(c_dim):
                 # compute a feature map for each channel
@@ -126,30 +127,32 @@ class Conv2DLayer(Layer):
                     filter_result = feature_map
                 else:
                     filter_result.add_with(feature_map)
-                upper_bound -= channel_bounds[channel]
-                upper_bound += filter_result.max_entry()[1]
-                if upper_bound + filter.get_bias() <= 0.0:
-                    print("SAVED! channel %s of %s" % (channel, c_dim))
             # add bias
             filter_result.elementwise_add_with(filter.get_bias())
             filter_result.apply_relu()
             return index, filter_result
 
     def output(self, input: Tensor3D) -> Tensor3D:
-        from multiprocessing import Pool
 
         c, x, y = input.shape()
         result = Tensor3D(len(self._filters), x, y)
-        # thanks to https://superfastpython.com/multiprocessing-pool-starmap/
-        with Pool() as pool:
-            for (index, slice) in pool.starmap(
-                Conv2DLayer.FilterResultComputation(),
-                [
-                    (index, filter, input)
-                    for (index, filter) in enumerate(self._filters)
-                ],
-            ):
+        if not MULTIPROCESSING:
+            for (index, filter) in enumerate(self._filters):
+                _, slice = Conv2DLayer.FilterResultComputation()(index, filter, input)
                 result.set_slice(index, slice)
+        else:
+            from multiprocessing import Pool
+
+            # thanks to https://superfastpython.com/multiprocessing-pool-starmap/
+            with Pool() as pool:
+                for (index, slice) in pool.starmap(
+                    Conv2DLayer.FilterResultComputation(),
+                    [
+                        (index, filter, input)
+                        for (index, filter) in enumerate(self._filters)
+                    ],
+                ):
+                    result.set_slice(index, slice)
         return result
 
     def __str__(self):

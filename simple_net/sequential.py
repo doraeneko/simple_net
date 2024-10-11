@@ -5,7 +5,6 @@
 # (C) Andreas Gaiser (doraeneko@github)
 # Sequential layer abstraction
 #################################################################
-import typing
 
 from .tensor3d import Tensor3D
 from .layer import Layer
@@ -25,13 +24,20 @@ class Sequential(Layer):
             result = layer.output(result)
             print("Intermediate result shape: %s" % str(result.shape()))
             for c in range(result.shape()[0]):
-                print("Channel %s: min: %s, max: %s" % (c, result.get_slice(c).min_entry()[1], result.get_slice(c).max_entry()[1]))
+                print(
+                    "Channel %s: min: %s, max: %s"
+                    % (
+                        c,
+                        result.get_slice(c).min_entry()[1],
+                        result.get_slice(c).max_entry()[1],
+                    )
+                )
         return result
 
     def __str__(self):
         result = "[\n"
         for layer in self._seq:
-            result += '%s\n' % layer
+            result += "%s\n" % layer
         result += "]"
         return result
 

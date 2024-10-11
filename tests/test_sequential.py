@@ -6,13 +6,8 @@
 # Tests for Sequential abstraction
 #################################################################
 
-import pytest
 from .common import *
-import tensorflow as tf
 import numpy as np
-from tensorflow.keras.models import Sequential, Model
-from tensorflow.keras.layers import Rescaling
-from ..simple_net.rescaling_layer import RescalingLayer
 from ..keras2simple_net import (
     transfer_batch_size_1_np_tensor_to_tensor3d,
     transfer_sequential,
@@ -25,10 +20,9 @@ def test_sequential_1():
     from pathlib import Path
 
     test_dir = Path(__file__).resolve().parent
-    model_path = test_dir / "model2.keras"
+    model_path = test_dir / "model.keras"
     model = load_model(model_path)
     simple_net_seq = transfer_sequential(model)
-    print(simple_net_seq)
     img_path = test_dir / "images/test_000001.png"
     img = image.load_img(img_path, color_mode="grayscale", target_size=(30, 30))
     img_array = image.img_to_array(img)

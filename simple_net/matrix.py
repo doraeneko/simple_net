@@ -12,14 +12,14 @@ from .vector import Vector
 
 
 class Matrix:
-    """Implementation of a float-valued matrix (2D tensor), using vectors internally."""
+    """Implementation of a float-valued matrix (2D tensor), using standard Python arrays internally."""
 
     def __init__(self, dim_x, dim_y):
         """Construct a dim_x X dim_y matrix."""
         self._shape = (dim_x, dim_y)
         self._x = dim_x
         self._y = dim_y
-        self._vals = array.array('f', [0.0] * dim_x*dim_y)
+        self._vals = array.array("f", [0.0] * dim_x * dim_y)
 
     def shape(self) -> typing.Tuple[int, int]:
         """Return shape of the matrix."""
@@ -28,7 +28,7 @@ class Matrix:
     def __getitem__(self, cell: typing.Tuple[int, int]) -> float:
         """Get matrix cell."""
         x, y = cell
-        return self._vals[x*self._y+y]
+        return self._vals[x * self._y + y]
 
     def __setitem__(self, cell: typing.Tuple[int, int], value: float):
         """Set matrix cell."""
@@ -36,25 +36,25 @@ class Matrix:
         self._vals[x * self._y + y] = value
 
     def min_entry(self) -> typing.Tuple[typing.Tuple[int, int], float]:
-        '''Return (x, y), v with self[x,y] == v minimal.'''
+        """Return (x, y), v with self[x,y] == v minimal."""
         min_index = None
         min_val = None
         for x in range(self._x):
             for y in range(self._y):
-                if min_index is None or self[x,y] < min_val:
+                if min_index is None or self[x, y] < min_val:
                     min_index = (x, y)
-                    min_val = self[x,y]
+                    min_val = self[x, y]
         return min_index, min_val
 
     def max_entry(self) -> typing.Tuple[typing.Tuple[int, int], float]:
-        '''Return (x, y), v with self[x,y] == v maximal.'''
+        """Return (x, y), v with self[x,y] == v maximal."""
         max_index = None
         max_val = None
         for x in range(self._x):
             for y in range(self._y):
-                if max_index is None or self[x,y] > max_val:
+                if max_index is None or self[x, y] > max_val:
                     max_index = (x, y)
-                    max_val = self[x,y]
+                    max_val = self[x, y]
         return max_index, max_val
 
     def apply(self, cell_transformer: typing.Callable[[float], float]):
@@ -67,13 +67,13 @@ class Matrix:
         """Return a copy of the column vector self[x, _]."""
         result = Vector(self._y)
         for y in range(self._y):
-            result[y] = self[x,y]
+            result[y] = self[x, y]
         return result
 
     def set_column_vector(self, x, v: Vector) -> Vector:
         """Set column vector self[x, _] to v. Modifies self. Uses v as reference."""
         for y in range(self._y):
-            self[x,y] = v[y]
+            self[x, y] = v[y]
 
     def apply_relu(self):
         """Apply RELU to each matrix cell. Modifies self."""
@@ -95,7 +95,6 @@ class Matrix:
             while x < dim_x:
                 val += self[x, y] * v[x]
                 x = x + 1
-
             result[y] = val
             y = y + 1
         return result

@@ -5,10 +5,10 @@
 # (C) Andreas Gaiser (doraeneko@github)
 # Abstract classes for filters
 #################################################################
+
 import abc
 import typing
 import functools
-
 from .matrix import Matrix
 
 

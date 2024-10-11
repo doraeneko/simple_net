@@ -9,13 +9,14 @@
 import typing
 import array
 
+
 class Vector:
-    """Implementation of a float-valued vector, using simple Python lists."""
+    """Implementation of a float-valued vector, using Python arrays."""
 
     def __init__(self, dim):
         """Create a new dim-dimensional vector, initialized with 0.0-values."""
         self._shape = (dim,)
-        self._vals = list(0.0 for _ in range(dim))
+        self._vals = array.array("f", [0.0] * dim)
 
     def shape(self) -> typing.Tuple[int]:
         """Return the shape of the vector as 1D-tuple."""
@@ -59,7 +60,7 @@ class Vector:
         return result
 
     def min_index_and_value(self) -> typing.Tuple[int, float]:
-        '''Return (x, v) with self[x] minimal and self[x] == v.'''
+        """Return (x, v) with self[x] minimal and self[x] == v."""
         min_index = -1
         min_val = None
         for i in range(len(self._vals)):
@@ -69,7 +70,7 @@ class Vector:
         return min_index, min_val
 
     def max_index_and_value(self) -> typing.Tuple[int, float]:
-        '''Return (x, v) with self[x] maximal and self[x] == v.'''
+        """Return (x, v) with self[x] maximal and self[x] == v."""
         max_index = -1
         max_val = None
         for i in range(len(self._vals)):

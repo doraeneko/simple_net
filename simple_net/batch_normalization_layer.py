@@ -5,13 +5,12 @@
 # (C) Andreas Gaiser (doraeneko@github)
 # Batch normalization layer implementation
 #################################################################
+
 import typing
-
-
+import math
 from .vector import Vector
 from .tensor3d import Tensor3D
 from .layer import Layer
-import math
 
 
 class BatchNormalizationLayer(Layer):

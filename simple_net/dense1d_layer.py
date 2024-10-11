@@ -6,7 +6,6 @@
 # Dense layer implementation
 #################################################################
 
-
 from .vector import Vector
 from .matrix import Matrix
 from .tensor3d import Tensor3D
