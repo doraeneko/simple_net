@@ -122,7 +122,7 @@ def transfer_sequential(seq: Sequential) -> SimpleNetSequential:
     partially supported net is not yet supported."""
     result = SimpleNetSequential()
     for layer in seq.layers:
-        print("Try to add %s." % layer)
+        # print("Trying to add %s." % layer)
         if isinstance(layer, BatchNormalization):
             result.push_layer(transfer_batch_normalization_layer(layer))
         elif isinstance(layer, Conv2D):
