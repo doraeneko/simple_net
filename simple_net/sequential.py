@@ -20,18 +20,18 @@ class Sequential(Layer):
     def output(self, input: Tensor3D) -> Tensor3D:
         result = input
         for layer in self._seq:
-            print("Executing layer %s" % layer)
+            # print("Executing layer %s" % layer)
             result = layer.output(result)
-            print("Intermediate result shape: %s" % str(result.shape()))
-            for c in range(result.shape()[0]):
-                print(
-                    "Channel %s: min: %s, max: %s"
-                    % (
-                        c,
-                        result.get_slice(c).min_entry()[1],
-                        result.get_slice(c).max_entry()[1],
-                    )
-                )
+            # print("Intermediate result shape: %s" % str(result.shape()))
+            # for c in range(result.shape()[0]):
+            #    print(
+            #        "Channel %s: min: %s, max: %s"
+            #        % (
+            #            c,
+            #            result.get_slice(c).min_entry()[1],
+            #            result.get_slice(c).max_entry()[1],
+            #        )
+            #    )
         return result
 
     def __str__(self):
