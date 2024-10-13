@@ -13,7 +13,7 @@ are written in Python and only provides a basic Python installation. Using or ad
 libraries like `numpy` or `keras` cannot easily be done. So the idea was to train a model in
 Keras for Kanji recognition and then transfer it into `simple_net` format, `pickle` it and then use it in the plugin.
 It also helped the author to familiarize himself better with the internals of the different Keras layers working,
-and he finally seemd to graps all concepts of convolutional layers, now that he had
+and he finally seemed to graps all concepts of convolutional layers, now that he had
 to code them on his own :-) 
 Unfortunately, the actual integration into MangAnki has still to be done...
 
